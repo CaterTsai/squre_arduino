@@ -1,5 +1,5 @@
 
-#define LED_EACH_SIDE 20
+#define LED_EACH_SIDE 10
 #define NUM_LEDS LED_EACH_SIDE * 4
 #define NUM_LEDS_HALF (LED_EACH_SIDE + LED_EACH_SIDE)
 #define DATA_PIN 5

@@ -39,7 +39,7 @@ void initMode()
   _modeList[0] = new LFlash(eModeFlash, 8);
   _modeList[1] = new LPRandom(eModePRandom, 4);
   _modeList[2] = new LLRandom(eModeLRandim, 4);
-  _modeList[3] = new LRunLine(eModeRunLine, 4);
+  _modeList[3] = new LRunLine(eModeRunLine, 5);
   _modeList[4] = new LOpen(eModeOpen, 4);
 }
 
@@ -88,7 +88,7 @@ void setup()
 
   timer = millis();
   initMode();
-  _modeList[4]->play(ePlayRepeat);
+  _modeList[3]->play(ePlayRepeat);
   _eState = eIdle;
   Serial.begin(9600);
 }

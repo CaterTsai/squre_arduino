@@ -38,13 +38,15 @@ class LPRandom : public baseLight
       }
       memcpy(&_randomT, source + 2, sizeof(int));
       _colorV = -255.0 / (_randomT / 1000.0);
-      _timer = 0;
+      Serial.println(_colorV);
+      _timer = _randomT;
     }
 
     virtual void play(ePlayType t)
     {
       _isPlaying = true;
       _playType = t;
+      setRandom();
     }
 
     virtual void stop()
@@ -54,7 +56,7 @@ class LPRandom : public baseLight
 
   private:
     void fadeColor(CRGB* ledData, long delta)
-    {
+    {      
       float deltaS = delta / 1000.0;
       _color.val += _colorV * deltaS;
       if (_color.val >= 10)
@@ -77,6 +79,7 @@ class LPRandom : public baseLight
         }
       }
     }
+    
     void setRandom()
     {
       int id = 0;
@@ -88,7 +91,8 @@ class LPRandom : public baseLight
           id++;
         }
       }
-      _color = CHSV(255, 0, 255);
+      _color = gColor;
+      _color.val = 255;
     }
   private:
     int _timer;

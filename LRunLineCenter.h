@@ -1,15 +1,15 @@
 #include "baseLight.h"
 
 //------------------------------------
-//LRunLine
-class LRunLine : public baseLight
+//LRunLineCenter
+class LRunLineCenter : public baseLight
 {
   public:
-    LRunLine(eMode mode, int len)
+    LRunLineCenter(eMode mode, int len)
       : baseLight(mode, len)
       , _runT(1000)
       , _timer(0)
-      , _eType(eCounterCirclewiseNoFull)
+      , _isFull(false)
     {
       _animV = 1.0f / (_runT / 1000.0);
     }
@@ -40,7 +40,7 @@ class LRunLine : public baseLight
         return;
       }
       memcpy(&_runT, source + 2, sizeof(int));
-      memcpy(&_eType, source + 4, sizeof(bool));
+      memcpy(&_isFull, source + 4, sizeof(bool));
       _timer = _runT;
       _animV = 1.0f / (_runT / 1000.0);
     }
@@ -70,21 +70,15 @@ class LRunLine : public baseLight
       _animP += _animV * detlaS;
       float nextPos = easeInOutQuad(_animP);
 
-      int sPos = getStartPos();
-      int ePos = getEndPos(nextPos);
-      if (sPos > ePos)
-      {
-        int temp = sPos;
-        sPos = ePos;
-        ePos = temp;
-      }
-      _pos = nextPos;
-
-      for (int i = sPos; i <= ePos; i++)
+      int len = static_cast<int>(LED_EACH_SIDE * nextPos * 0.5 + 0.5);
+      int s = _isFull ? 0 : len;
+      int center = LED_EACH_SIDE * 0.5;
+      for (int i = s; i <= len; i++)
       {
         for (int j = 0; j < 4; j++)
         {
-          ledData[i + j * LED_EACH_SIDE] = gColor;
+          ledData[center + i + j * LED_EACH_SIDE] = gColor;
+          ledData[center - i + j * LED_EACH_SIDE] = gColor;
         }
       }
 
@@ -103,68 +97,11 @@ class LRunLine : public baseLight
       return t < 0.5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t;
     }
 
-    int getStartPos()
-    {
-      float r;
-      switch (_eType)
-      {
-        case eCirclewiseFull:
-          {
-            r = 0;
-            break;
-          }
-        case eCirclewiseNoFull:
-          {
-            r = LED_EACH_SIDE * _pos;
-            break;
-          }
-        case eCounterCirclewiseFull:
-          {
-            r = LED_EACH_SIDE - 1;
-            break;
-          }
-        case eCounterCirclewiseNoFull:
-        default:
-          {
-            r = LED_EACH_SIDE * (1.0 - _pos);
-            break;
-          }
-      }
-      return r;
-    }
-
-    int getEndPos(float pos)
-    {
-      float r;
-      switch (_eType)
-      {
-        case eCirclewiseFull:
-        case eCirclewiseNoFull:
-          {
-            r = LED_EACH_SIDE * pos;
-            break;
-          }
-        case eCounterCirclewiseFull:
-        case eCounterCirclewiseNoFull:
-        default:
-          {
-            r = LED_EACH_SIDE * (1.0 - pos);
-            break;
-          }
-      }
-      return r;
-    }
   private:
     int _timer;
     int _runT;
     float _animP, _animV;
     float _pos;
-    enum eType
-    {
-      eCirclewiseFull = 0
-      , eCirclewiseNoFull
-      , eCounterCirclewiseFull
-      , eCounterCirclewiseNoFull
-    } _eType;
+    bool _isFull;
 };
 

@@ -8,7 +8,9 @@ enum eMode
   , eModeLRandim
   , eModeRunLine
   , eModeOpen
+  , eModeRunLineC
   , eModeNum
+  , eModeColor = 100
 };
 
 enum ePlayType

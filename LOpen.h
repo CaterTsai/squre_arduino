@@ -17,6 +17,7 @@ class LOpen : public baseLight
     {
       _isPlaying = true;
       _playType = t;
+      open();
     }
 
     virtual void stop()
@@ -35,7 +36,10 @@ class LOpen : public baseLight
       if (_timer <= 0)
       {
         _timer = _openT;
-        open();
+        if (_playType == ePlayRepeat)
+        {
+          open();
+        }
       }
       updateOpen(ledData, delta);
     }
@@ -47,7 +51,7 @@ class LOpen : public baseLight
         return;
       }
       memcpy(&_openT, source + 2, sizeof(int));
-      _timer = 0;
+      _timer = _openT;
       _animV = 1.0f / (_openT / 1000.0);
     }
 
@@ -71,8 +75,8 @@ class LOpen : public baseLight
 
         if (dist <= len)
         {
-          ledData[i] = CRGB::Red;
-          ledData[i + NUM_LEDS_HALF] = CRGB::Red;
+          ledData[i] = gColor;
+          ledData[i + NUM_LEDS_HALF] = gColor;
         }
       }
 

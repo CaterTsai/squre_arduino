@@ -34,20 +34,11 @@ class LFlash : public baseLight
       _timer -= delta;
       if (_timer <= 0)
       {
-        setLight(ledData, true);
         _timer = _flashT;
-        _updateFlash = true;
-      }
-      else
-      {
-        if (_updateFlash)
+        setLight(ledData);
+        if (_playType == ePlayOnce)
         {
-          setLight(ledData, false);
-          _updateFlash = false;
-          if (_playType == ePlayOnce)
-          {
-            _isPlaying = false;
-          }
+          _isPlaying = false;
         }
       }
     }
@@ -68,14 +59,14 @@ class LFlash : public baseLight
     }
 
   private:
-    void setLight(CRGB* ledData, bool isFlash)
+    void setLight(CRGB* ledData)
     {
       for (int i = 0; i < NUM_LEDS; i++)
       {
         int ledID = floor(i / (float)LED_EACH_SIDE);
         if (_needFlash[ledID])
         {
-          ledData[i] = isFlash ? CRGB::White : CRGB::Black;
+          ledData[i] = gColor;
         }
       }
     }

@@ -23,8 +23,11 @@ class LLRandom : public baseLight
       _timer -= delta;
       if (_timer <= 0)
       {
-        setRandom();
         _timer = _randomT;
+        if (_playType == ePlayRepeat)
+        {
+          setRandom();
+        }
       }
 
       fadeColor(ledData, delta);
@@ -38,13 +41,14 @@ class LLRandom : public baseLight
       }
       memcpy(&_randomT, source + 2, sizeof(int));
       _colorV = -255.0 / (_randomT / 1000.0);
-      _timer = 0;
+      _timer = _randomT;
     }
 
     virtual void play(ePlayType t)
     {
       _isPlaying = true;
       _playType = t;
+      setRandom();
     }
 
     virtual void stop()
@@ -57,7 +61,7 @@ class LLRandom : public baseLight
     {
       float deltaS = delta / 1000.0;
       _color.val += _colorV * deltaS;
-      
+
       if (_color.val >= 10)
       {
         for (int i = 0; i < RANDOM_LINE_NUM; i++)
@@ -67,9 +71,9 @@ class LLRandom : public baseLight
             break;
           }
           int count = 0;
-          for(int j = _ledID[i]; j < NUM_LEDS && count <= RANDOM_LINE_LENGTH; j++, count++)
+          for (int j = _ledID[i]; j < NUM_LEDS && count <= RANDOM_LINE_LENGTH; j++, count++)
           {
-            ledData[j] = _color;  
+            ledData[j] = _color;
           }
         }
       }
@@ -93,7 +97,8 @@ class LLRandom : public baseLight
           id++;
         }
       }
-      _color = CHSV(255, 0, 255);
+      _color = gColor;
+      _color.val = 255;
     }
   private:
     int _timer;

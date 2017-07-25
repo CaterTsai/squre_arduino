@@ -1,4 +1,6 @@
 #include<FastLED.h>
+static CHSV gColor(0, 255, 128);
+
 #include "constParameter.h"
 #include "lightMode.h"
 
@@ -41,6 +43,7 @@ void initMode()
   _modeList[2] = new LLRandom(eModeLRandim, 4);
   _modeList[3] = new LRunLine(eModeRunLine, 5);
   _modeList[4] = new LOpen(eModeOpen, 4);
+  _modeList[5] = new LRunLineCenter(eModeRunLineC, 5);
 }
 
 void updateMode(unsigned long delta)
@@ -54,29 +57,39 @@ void updateMode(unsigned long delta)
 void processSerialData()
 {
   int modeId = _serialInput[0];
-  if (modeId < 0 || modeId > eModeNum)
+  if (modeId < 0)
   {
     return;
   }
-  _modeList[modeId]->holdData(_serialInput, _targetLength);
 
-  switch (_serialInput[1])
+  if (modeId == eModeColor && _serialInput[1] == 'c')
   {
-    case 't':
-      {
-        _modeList[modeId]->play(ePlayOnce);
-        break;
-      }
-    case 'p':
-      {
-        _modeList[modeId]->play(ePlayRepeat);
-        break;
-      }
-    case 's':
-      {
-        _modeList[modeId]->stop();
-        break;
-      }
+    gColor.hue = _serialInput[2];
+    gColor.sat = _serialInput[3];
+    gColor.val = _serialInput[4];
+  }
+  else
+  {
+    _modeList[modeId]->holdData(_serialInput, _targetLength);
+
+    switch (_serialInput[1])
+    {
+      case 't':
+        {
+          _modeList[modeId]->play(ePlayOnce);
+          break;
+        }
+      case 'p':
+        {
+          _modeList[modeId]->play(ePlayRepeat);
+          break;
+        }
+      case 's':
+        {
+          _modeList[modeId]->stop();
+          break;
+        }
+    }
   }
 }
 
@@ -88,8 +101,8 @@ void setup()
 
   timer = millis();
   initMode();
-  _modeList[3]->play(ePlayRepeat);
   _eState = eIdle;
+  //_modeList[1]->play(ePlayRepeat);
   Serial.begin(9600);
 }
 
@@ -102,6 +115,7 @@ void loop()
   updateMode(delta);
 
   FastLED.show();
+
 }
 
 //------------------------------------------------

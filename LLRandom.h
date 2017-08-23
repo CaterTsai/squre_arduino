@@ -20,6 +20,9 @@ class LLRandom : public baseLight
       {
         return;
       }
+
+      fadeColor(ledData, delta);
+      
       _timer -= delta;
       if (_timer <= 0)
       {
@@ -29,8 +32,6 @@ class LLRandom : public baseLight
           setRandom();
         }
       }
-
-      fadeColor(ledData, delta);
     }
 
     virtual void holdData(unsigned char* source, int len)
@@ -60,10 +61,10 @@ class LLRandom : public baseLight
     void fadeColor(CRGB* ledData, long delta)
     {
       float deltaS = delta / 1000.0;
-      _color.val += _colorV * deltaS;
-
-      if (_color.val >= 10)
+      float diff = _colorV * deltaS;
+      if ((_color.val + diff) > 0)
       {
+        _color.val += diff;
         for (int i = 0; i < RANDOM_LINE_NUM; i++)
         {
           if (_ledID[i] == -1)

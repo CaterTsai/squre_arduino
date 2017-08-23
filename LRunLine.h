@@ -20,7 +20,7 @@ class LRunLine : public baseLight
       {
         return;
       }
-
+      updateRunLine(ledData, delta);
       _timer -= delta;
       if (_timer <= 0)
       {
@@ -30,7 +30,6 @@ class LRunLine : public baseLight
         }
         _timer = _runT;
       }
-      updateRunLine(ledData, delta);
     }
 
     virtual void holdData(unsigned char* source, int len)

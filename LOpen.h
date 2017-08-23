@@ -27,11 +27,13 @@ class LOpen : public baseLight
 
     virtual void update(CRGB* ledData, long delta)
     {
+      
       if (!_isPlaying)
       {
         return;
       }
-
+      updateOpen(ledData, delta);
+      
       _timer -= delta;
       if (_timer <= 0)
       {
@@ -41,7 +43,6 @@ class LOpen : public baseLight
           open();
         }
       }
-      updateOpen(ledData, delta);
     }
 
     virtual void holdData(unsigned char* source, int len)

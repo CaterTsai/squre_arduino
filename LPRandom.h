@@ -20,8 +20,7 @@ class LPRandom : public baseLight
       {
         return;
       }
-      fadeColor(ledData, delta);
-
+      setColor(ledData);
       _timer -= delta;
       if (_timer <= 0)
       {
@@ -59,34 +58,21 @@ class LPRandom : public baseLight
     }
 
   private:
-    void fadeColor(CRGB* ledData, long delta)
+    void setColor(CRGB* ledData)
     {
-      float deltaS = delta / 1000.0;
-      float diff = _colorV * deltaS;
-      if ((_color.val + diff) > 0)
+      for (int i = 0; i < RANDOM_LIGHT_NUM; i++)
       {
-        _color.val += diff;
-        for (int i = 0; i < RANDOM_LIGHT_NUM; i++)
+        if (_ledID[i] == -1)
         {
-          if (_ledID[i] == -1)
-          {
-            break;
-          }
-          ledData[_ledID[i]] = _color;
+          break;
         }
-      }
-      else
-      {
-        memset(_ledID, -1, RANDOM_LIGHT_NUM);
-        if (_playType == ePlayOnce)
-        {
-          _isPlaying = false;
-        }
+        ledData[_ledID[i]] = _color;
       }
     }
 
     void setRandom()
     {
+      memset(_ledID, -1, RANDOM_LIGHT_NUM);
       int id = 0;
       for (int i = 0; i < RANDOM_LIGHT_NUM; i++)
       {

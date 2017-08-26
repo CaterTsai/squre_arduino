@@ -11,7 +11,6 @@ class LLRandom : public baseLight
       , _timer(0)
     {
       memset(_ledID, -1, RANDOM_LINE_NUM);
-      _colorV = -255.0 / (_randomT / 1000.0);
     }
 
     virtual void update(CRGB* ledData, long delta)
@@ -21,8 +20,7 @@ class LLRandom : public baseLight
         return;
       }
 
-      fadeColor(ledData, delta);
-      
+      setColor(ledData);
       _timer -= delta;
       if (_timer <= 0)
       {
@@ -41,7 +39,6 @@ class LLRandom : public baseLight
         return;
       }
       memcpy(&_randomT, source + 2, sizeof(int));
-      _colorV = -255.0 / (_randomT / 1000.0);
       _timer = _randomT;
     }
 
@@ -58,37 +55,24 @@ class LLRandom : public baseLight
     }
 
   private:
-    void fadeColor(CRGB* ledData, long delta)
+    void setColor(CRGB* ledData)
     {
-      float deltaS = delta / 1000.0;
-      float diff = _colorV * deltaS;
-      if ((_color.val + diff) > 0)
+      for (int i = 0; i < RANDOM_LINE_NUM; i++)
       {
-        _color.val += diff;
-        for (int i = 0; i < RANDOM_LINE_NUM; i++)
+        if (_ledID[i] == -1)
         {
-          if (_ledID[i] == -1)
-          {
-            break;
-          }
-          int count = 0;
-          for (int j = _ledID[i]; j < NUM_LEDS && count <= RANDOM_LINE_LENGTH; j++, count++)
-          {
-            ledData[j] = _color;
-          }
+          break;
         }
-      }
-      else
-      {
-        memset(_ledID, -1, RANDOM_LINE_NUM);
-        if (_playType == ePlayOnce)
+        int count = 0;
+        for (int j = _ledID[i]; j < NUM_LEDS && count <= RANDOM_LINE_LENGTH; j++, count++)
         {
-          _isPlaying = false;
+          ledData[j] = _color;
         }
       }
     }
     void setRandom()
     {
+      memset(_ledID, -1, RANDOM_LINE_NUM);
       int id = 0;
       for (int i = 0; i < RANDOM_LINE_NUM; i++)
       {

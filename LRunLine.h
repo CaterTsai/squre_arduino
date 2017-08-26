@@ -16,7 +16,7 @@ class LRunLine : public baseLight
 
     virtual void update(CRGB* ledData, long delta)
     {
-      if (!_isPlaying)
+      if (!_isPlaying || delta <= 0)
       {
         return;
       }
@@ -68,7 +68,7 @@ class LRunLine : public baseLight
       float detlaS = delta / 1000.0;
       _animP += _animV * detlaS;
       float nextPos = easeInOutQuad(_animP);
-
+      
       int sPos = getStartPos();
       int ePos = getEndPos(nextPos);
       if (sPos > ePos)

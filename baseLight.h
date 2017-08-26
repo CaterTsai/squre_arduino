@@ -5,12 +5,13 @@ enum eMode
 {
   eModeFlash = 0
   , eModePRandom
-  , eModeLRandim
   , eModeRunLine
   , eModeOpen
   , eModeRunLineC
+  , eModeBreathe
   , eModeNum
   , eModeColor = 100
+  , eModeStop
 };
 
 enum ePlayType

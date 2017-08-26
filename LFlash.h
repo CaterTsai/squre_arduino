@@ -26,7 +26,7 @@ class LFlash : public baseLight
 
     virtual void update(CRGB* ledData, long delta)
     {
-      if (!_isPlaying)
+      if (!_isPlaying || delta <= 0)
       {
         return;
       }

@@ -17,7 +17,7 @@ void clearLED()
   {
     _leds[i] = CRGB::Black;
   }
-  
+
 }
 
 //---------------------
@@ -41,10 +41,10 @@ void initMode()
 {
   _modeList[0] = new LFlash(eModeFlash, 8);
   _modeList[1] = new LPRandom(eModePRandom, 4);
-  _modeList[2] = new LLRandom(eModeLRandim, 4);
-  _modeList[3] = new LRunLine(eModeRunLine, 5);
-  _modeList[4] = new LOpen(eModeOpen, 4);
-  _modeList[5] = new LRunLineCenter(eModeRunLineC, 5);
+  _modeList[2] = new LRunLine(eModeRunLine, 5);
+  _modeList[3] = new LOpen(eModeOpen, 4);
+  _modeList[4] = new LRunLineCenter(eModeRunLineC, 5);
+  _modeList[5] = new LBreathe(eModeBreathe, 4);
 }
 
 void updateMode(unsigned long delta)
@@ -68,6 +68,13 @@ void processSerialData()
     gColor.hue = _serialInput[2];
     gColor.sat = _serialInput[3];
     gColor.val = _serialInput[4];
+  }
+  else if(modeId == eModeStop && _serialInput[1] == 's')
+  {
+    for(int i = 0; i < eModeNum; i++)
+    {
+      _modeList[i]->stop();
+    }
   }
   else
   {
@@ -100,19 +107,19 @@ void setup()
 {
   FastLED.addLeds<WS2811, DATA_PIN, GRB>(_leds, NUM_LEDS);
   FastLED.setBrightness(96);
-  timer = millis();
+
   initMode();
   _eState = eIdle;
-  //_modeList[4]->play(ePlayRepeat);
-
+  testLight();
   Serial.begin(115200);
+  _modeList[5]->play(ePlayRepeat);
 }
 
 //------------------------------------------------
 void loop()
 {
-  unsigned long delta = millis() - timer;
-  timer += delta;
+  unsigned long delta = 15;
+  
   clearLED();
   updateMode(delta);
 
@@ -173,41 +180,41 @@ void serialEvent() {
 //-------------------------------
 void testLight()
 {
-  for(int i = 0; i < NUM_LEDS; i++)
+  for (int i = 0; i < NUM_LEDS; i++)
   {
     _leds[i] = CRGB(255, 0, 0);
   }
   FastLED.show();
-  delay(1000);
-    for(int i = 0; i < NUM_LEDS; i++)
+  delay(200);
+  for (int i = 0; i < NUM_LEDS; i++)
   {
     _leds[i] = CRGB(0, 255, 0);
   }
   FastLED.show();
-  delay(1000);
-  for(int i = 0; i < NUM_LEDS; i++)
+  delay(200);
+  for (int i = 0; i < NUM_LEDS; i++)
   {
     _leds[i] = CRGB(0, 0, 255);
   }
   FastLED.show();
-  delay(1000);
-    for(int i = 0; i < NUM_LEDS; i++)
+  delay(200);
+  for (int i = 0; i < NUM_LEDS; i++)
   {
     _leds[i] = CRGB(255, 255, 0);
   }
   FastLED.show();
-  delay(1000);
-    for(int i = 0; i < NUM_LEDS; i++)
+  delay(200);
+  for (int i = 0; i < NUM_LEDS; i++)
   {
     _leds[i] = CRGB(255, 0, 255);
   }
   FastLED.show();
-  delay(1000);
-  for(int i = 0; i < NUM_LEDS; i++)
+  delay(200);
+  for (int i = 0; i < NUM_LEDS; i++)
   {
     _leds[i] = CRGB(0, 255, 255);
   }
   FastLED.show();
-  delay(1000);
+  delay(200);
 }
 

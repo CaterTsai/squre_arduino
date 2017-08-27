@@ -112,7 +112,7 @@ void setup()
   _eState = eIdle;
   testLight();
   Serial.begin(115200);
-  _modeList[5]->play(ePlayRepeat);
+  //_modeList[5]->play(ePlayRepeat);
 }
 
 //------------------------------------------------
